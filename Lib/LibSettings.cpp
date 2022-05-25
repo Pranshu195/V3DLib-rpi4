@@ -3,7 +3,7 @@
 
 namespace V3DLib {
 namespace {
-int const DEFAULT_HEAP_SIZE = 8*1024*1024;
+int const DEFAULT_HEAP_SIZE = 8*1024*1024*1024;
 int const QPU_TIMEOUT = 10;
 
 struct SettingsInternal {
