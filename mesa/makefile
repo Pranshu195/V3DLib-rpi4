@@ -17,9 +17,9 @@
 #
 ################################################################################
 SRCDIR = src
-OBJDIR = ../obj/mesa/src
-BINDIR = ../obj/mesa/bin
-MAINDIR = ../obj/mesa/main
+OBJDIR = ../../v3dlib_build/obj/mesa/src
+BINDIR = ../../v3dlib_build/obj/mesa/bin
+MAINDIR = ../../v3dlib_build/obj/mesa/main
 
 XX_FLAGS = -MMD -MP -MF"$(@:%.o=%.d)"
 

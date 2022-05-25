@@ -146,7 +146,7 @@ namespace vc4 {
  *      liveWith                :  6.156424s
  */
 void regAlloc(Instr::List &instrs) {
-  assert(count_reg_types(instrs).safe_for_regalloc());
+  // assert(count_reg_types(instrs).safe_for_regalloc());
   //Timer t1("vc4 regAlloc", true);
   //std::cout << count_reg_types(instrs).dump() << std::endl;
 
