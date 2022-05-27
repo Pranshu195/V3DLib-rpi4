@@ -7,67 +7,33 @@ project(v3dlib C CXX)
 # CXX Flags
 
 SET(CMAKE_CXX_FLAGS_RELEASE "-DEIGEN_NO_DEBUG -DNDEBUG -DQPU_MODE")
-
+add_definitions(-DQPU_MODE)
 if(CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS
       "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wextra -Wno-unknown-pragmas \
        -Wno-sign-compare -Wno-unused-parameter -Wno-missing-field-initializers"
   )
-  set(CMAKE_CXX_FLAGS_RELEASE
-      "${CMAKE_CXX_FLAGS_RELEASE} -DEIGEN_NO_DEBUG -DNDEBUG")
   set(CMAKE_CXX_FLAGS_DEBUG "-Og -pg -g -DQPU_MODE")
 endif()
 
 # Optimization flags
 # string(TOUPPER ${CMAKE_BUILD_TYPE} BUILD_TYPE)
-if(CMAKE_COMPILER_IS_GNUCXX AND (BUILD_TYPE STREQUAL "RELEASE"))
-  if(CMAKE_CROSSCOMPILING)
-    if((CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64") OR
-       (CMAKE_SYSTEM_PROCESSOR STREQUAL "cortex-a72-aarch64") OR # RaspberryPi 4
-       (CMAKE_SYSTEM_PROCESSOR STREQUAL "cortex-a72-aarch32") OR # RaspberryPi 4
-       (CMAKE_SYSTEM_PROCESSOR STREQUAL "cortex-a72"))           # RaspberryPi 4
-    set(CMAKE_CXX_FLAGS_RELEASE
-          "${CMAKE_CXX_FLAGS_RELEASE} -O3 -ftree-vectorize -mcpu=cortex-a72 \
-           -march=armv8-a+crc -mtune=cortex-a72 -ffast-math -fgcse-lm \
-           -fgcse-sm -fgcse-las -fgcse-after-reload -Wno-psabi"
-      )    
-    elseif((CMAKE_SYSTEM_PROCESSOR STREQUAL "armv6l") OR
-           (CMAKE_SYSTEM_PROCESSOR STREQUAL "arm1176jzfs"))  # RaspberryPi 0
-      set(CMAKE_CXX_FLAGS_RELEASE
-          "${CMAKE_CXX_FLAGS_RELEASE} -O3 -ftree-vectorize -march=armv6zk \
-          -mcpu=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp -ffast-math \
-          -funsafe-math-optimizations -fgcse-lm -fgcse-sm -fgcse-las \
-          -fgcse-after-reload -Wno-psabi"
-      )
-    elseif((CMAKE_SYSTEM_PROCESSOR STREQUAL "armv7l") OR
-           (CMAKE_SYSTEM_PROCESSOR STREQUAL "cortex-a53-aarch64") OR # RaspberryPi 3
-           (CMAKE_SYSTEM_PROCESSOR STREQUAL "cortex-a53-aarch32") OR # RaspberryPi 3
-           (CMAKE_SYSTEM_PROCESSOR STREQUAL "cortex-a53"))           # RaspberryPi 3
-	     set(CMAKE_CXX_FLAGS_RELEASE
-	     "${CMAKE_CXX_FLAGS_RELEASE} -O3 -ftree-vectorize -mcpu=cortex-a53 \
-	     -march=armv8-a+crc -mtune=cortex-a53 -mfpu=neon-fp-armv8 \
-	     -mfloat-abi=hard -ffast-math -fgcse-lm -fgcse-sm -fgcse-las \
-	     -fgcse-after-reload -Wno-psabi")
-    else()
-      message(FATAL_ERROR "Unrecognized crosscompiler architecture, CMAKE_SYSTEM_PROCESSOR='${CMAKE_SYSTEM_PROCESSOR}'")
-    endif()
-  else()
-    set(CMAKE_CXX_FLAGS_RELEASE
-        "${CMAKE_CXX_FLAGS_RELEASE} -O3 -ftree-vectorize \
-        -march=native -mtune=native -ffast-math"
-    )
-  endif()
-endif()
+set(CMAKE_CXX_FLAGS_RELEASE
+      "${CMAKE_CXX_FLAGS_RELEASE} -O3 -ftree-vectorize -mcpu=cortex-a72 \
+        -march=armv8-a+crc -mtune=cortex-a72 -ffast-math -fgcse-lm \
+        -fgcse-sm -fgcse-las -fgcse-after-reload -Wno-psabi"
+  )    
 
 
 
 SET(V3DLIB "v3dlib")
 
+INCLUDE_DIRECTORIES(/opt/vc/include)
+
 SET(MESA_DIR ${CMAKE_CURRENT_LIST_DIR}/mesa)
 INCLUDE_DIRECTORIES(${MESA_DIR}/include)
 INCLUDE_DIRECTORIES(${MESA_DIR}/src)
 
-INCLUDE_DIRECTORIES(/opt/vc/include)
 
 SET(V3DLIB_DIR ${CMAKE_CURRENT_LIST_DIR}/Lib)
 
@@ -104,8 +70,6 @@ file(
 )
 
 add_library(${V3DLIB}_static STATIC ${V3D_SOURCES})
-
-message(STATUS "v3d set target properties = ${CMAKE_SOURCE_DIR}")
 
 # include(ExternalProject)
 # ExternalProject_Add( mesa
@@ -174,67 +138,6 @@ set(CMAKE_C_FLAGS
       -D GALLIUM_V3D \
       ${XX_FLAGS}"
 )
-
-set(CMAKE_CXX_FLAGS_RELEASE
-    "${CMAKE_CXX_FLAGS_RELEASE} -DEIGEN_NO_DEBUG -DNDEBUG -DQPU_MODE")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Og -pg -g -DQPU_MODE")
-
-set(CMAKE_C_FLAGS_RELEASE
-    "${CMAKE_C_FLAGS_RELEASE} -DEIGEN_NO_DEBUG -DNDEBUG -DQPU_MODE")
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Og -pg -g -DQPU_MODE")
-
-
-# Optimization flags
-# string(TOUPPER ${CMAKE_BUILD_TYPE} BUILD_TYPE)
-if(CMAKE_COMPILER_IS_GNUCXX AND (BUILD_TYPE STREQUAL "RELEASE"))
-  if(CMAKE_CROSSCOMPILING)
-    if((CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64") OR
-       (CMAKE_SYSTEM_PROCESSOR STREQUAL "cortex-a72-aarch64") OR # RaspberryPi 4
-       (CMAKE_SYSTEM_PROCESSOR STREQUAL "cortex-a72-aarch32") OR # RaspberryPi 4
-       (CMAKE_SYSTEM_PROCESSOR STREQUAL "cortex-a72"))           # RaspberryPi 4
-    set(CMAKE_CXX_FLAGS_RELEASE
-          "${CMAKE_CXX_FLAGS_RELEASE} -O3 -ftree-vectorize -mcpu=cortex-a72 \
-           -march=armv8-a+crc -mtune=cortex-a72 -ffast-math -fgcse-lm \
-           -fgcse-sm -fgcse-las -fgcse-after-reload"
-      )    
-    elseif((CMAKE_SYSTEM_PROCESSOR STREQUAL "armv6l") OR
-           (CMAKE_SYSTEM_PROCESSOR STREQUAL "arm1176jzfs"))  # RaspberryPi 0
-      set(CMAKE_CXX_FLAGS_RELEASE
-          "${CMAKE_CXX_FLAGS_RELEASE} -O3 -ftree-vectorize -march=armv6zk \
-          -mcpu=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp -ffast-math \
-          -funsafe-math-optimizations -fgcse-lm -fgcse-sm -fgcse-las \
-          -fgcse-after-reload -Wno-psabi"
-      )
-    elseif((CMAKE_SYSTEM_PROCESSOR STREQUAL "armv7l") OR
-           (CMAKE_SYSTEM_PROCESSOR STREQUAL "cortex-a53-aarch64") OR # RaspberryPi 3
-           (CMAKE_SYSTEM_PROCESSOR STREQUAL "cortex-a53-aarch32") OR # RaspberryPi 3
-           (CMAKE_SYSTEM_PROCESSOR STREQUAL "cortex-a53"))           # RaspberryPi 3
-	     set(CMAKE_CXX_FLAGS_RELEASE
-	     "${CMAKE_CXX_FLAGS_RELEASE} -O3 -ftree-vectorize -mcpu=cortex-a53 \
-	     -march=armv8-a+crc -mtune=cortex-a53 -mfpu=neon-fp-armv8 \
-	     -mfloat-abi=hard -ffast-math -fgcse-lm -fgcse-sm -fgcse-las \
-	     -fgcse-after-reload")
-    else()
-      message(FATAL_ERROR "Unrecognized crosscompiler architecture, CMAKE_SYSTEM_PROCESSOR='${CMAKE_SYSTEM_PROCESSOR}'")
-    endif()
-  else()
-    set(CMAKE_CXX_FLAGS_RELEASE
-        "${CMAKE_CXX_FLAGS_RELEASE} -O3 -ftree-vectorize \
-        -march=native -mtune=native -ffast-math"
-    )
-  endif()
-endif()
-
-
-
-message(STATUS "MESA CXX_FLAGS ... ${CMAKE_CXX_FLAGS}")
-message(STATUS "MESA C_FLAGS ... ${CMAKE_C_FLAGS}")
-message(STATUS "MESA CXX_FLAGS_RELEASE ... ${CMAKE_CXX_FLAGS_RELEASE}")
-message(STATUS "MESA C_FLAGS_RELEASE ... ${CMAKE_C_FLAGS_RELEASE}")
-message(STATUS "MESA CXX_FLAGS_DEBUG ... ${CMAKE_CXX_FLAGS_DEBUG}")
-message(STATUS "MESA C_FLAGS_DEBUG ... ${CMAKE_C_FLAGS_DEBUG}")
-
-
 
 
 SET(MESA_LIB_DIR ${CMAKE_CURRENT_LIST_DIR}/mesa)
@@ -320,5 +223,4 @@ set(MESA_LIB "mesa")
 add_library(${MESA_LIB}_static STATIC ${MESA_SOURCES} )
 
 
-message (STATUS "CMAKE v3dlib flags = ${CMAKE_CXX_FLAGS_RELEASE} , ${CMAKE_CXX_FLAGS_DEBUG}")
 # set_target_properties(${V3DLIB}_static PROPERTIES PUBLIC_HEADER ${CMAKE_SOURCE_DIR}/Lib/V3DLib.h)
