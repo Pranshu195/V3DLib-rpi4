@@ -109,6 +109,12 @@ public:
     }
   }
 
+   void copyFrom(std::vector<T> const &src, int off) {
+    assert(!src.empty());
+    assert(src.size() <= size());
+    memcpy((*this).access()+off, src.data(), sizeof(T)*src.size());
+  }
+
   void copyTo(std::vector<T> &dst) {
     assert(!empty());
 
@@ -184,6 +190,12 @@ protected:
 
     T *base = (T *) m_usraddr;
     return base[i];
+  }
+
+  T* access() {
+    assert(allocated());
+    T *base = (T *) m_usraddr;
+    return base;
   }
 };
 
