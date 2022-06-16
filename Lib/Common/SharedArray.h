@@ -126,6 +126,14 @@ public:
     }
   }
 
+  void copyTo(std::vector<T> &dst, int off, int size) {
+    assert(!empty());
+    assert(size <= size());
+    assert(off+size <= size());
+    // vector insertion method
+    dst.insert(dst.end(), (*this).access()+off, (*this).access()+off+size);
+  }
+
 
   /**
    * Debug method for showing a range in a shared array
