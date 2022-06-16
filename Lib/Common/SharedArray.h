@@ -126,12 +126,12 @@ public:
     }
   }
 
-  void copyTo(std::vector<T> &dst, int off, int size) {
+  void copyTo(std::vector<T> &dst, int off, int sz) {
     assert(!empty());
-    assert(size <= size());
-    assert(off+size <= size());
+    assert(sz <= size());
+    assert(off+sz <= size());
     // vector insertion method
-    dst.insert(dst.end(), (*this).access()+off, (*this).access()+off+size);
+    dst.insert(dst.end(), (*this).access()+off, (*this).access()+off+sz);
   }
 
 
