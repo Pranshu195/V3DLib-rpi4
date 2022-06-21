@@ -134,6 +134,11 @@ public:
     dst.insert(dst.end(), (*this).access()+off, (*this).access()+off+sz);
   }
 
+  T* access() {
+    assert(allocated());
+    T *base = (T *) m_usraddr;
+    return base;
+  }
 
   /**
    * Debug method for showing a range in a shared array
@@ -198,12 +203,6 @@ protected:
 
     T *base = (T *) m_usraddr;
     return base[i];
-  }
-
-  T* access() {
-    assert(allocated());
-    T *base = (T *) m_usraddr;
-    return base;
   }
 };
 
